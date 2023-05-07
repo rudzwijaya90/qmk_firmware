@@ -5,6 +5,7 @@ OLED_DRIVER     = SSD1306
 LTO_ENABLE      = yes
 TAP_DANCE_ENABLE = yes
 WPM_ENABLE = yes
+
 #to save space
 MIDI_ENABLE = no            # MIDI controls
 AUDIO_ENABLE = no           # Audio output on port C6
