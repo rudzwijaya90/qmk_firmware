@@ -19,13 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
-// #define _QWERTY 0
-// #define _COLEMAK 1
-// #define _LOWER 2
-// #define _RAISE 3
-// #define _ADJUST 4
-// #define _NUMLOCK 5
-
 enum layers {
   _QWERTY,
   _COLEMAK,
@@ -117,7 +110,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_ESC,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                 KC_LALT,  MO(_NUMLOCK),  KC_SPC,                 KC_ENT,   RAISE, TT_RALT
+                                 KC_LALT,   MO(3),  KC_SPC,                       KC_ENT,   RAISE, TT_RALT
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -192,8 +185,6 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case LOWER:
-        case RAISE:
         case RR_CTL:
             // Immediately select the hold action when another key is pressed.
             return true;
@@ -437,20 +428,20 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
 void oled_render_layer_state(void) {
     // Host Keyboard Layer Status
     oled_set_cursor(0, 1);
-    oled_write_P(PSTR("LAYER "), false);
+    oled_write_P(PSTR("LAYER"), false);
     oled_set_cursor(0, 2);
     switch(get_highest_layer(layer_state|default_layer_state)) {
         case _QWERTY:
             oled_write_ln_P(PSTR("Base"), false);
             break;
         case _COLEMAK:
-            oled_write_ln_P(PSTR("Col"), false);
+            oled_write_ln_P(PSTR("Clmk"), false);
             break;
         case _GAME:
             oled_write_ln_P(PSTR("Game"), false);
             break;
         case _NUMLOCK:
-            oled_write_ln_P(PSTR("Num"), false);
+            oled_write_ln_P(PSTR("NumL"), false);
             break;
         case _LOWER:
             oled_write_ln_P(PSTR("Lower"), false);
@@ -469,7 +460,7 @@ void oled_render_layer_state(void) {
     led_t led_usb_state = host_keyboard_led_state();
     oled_set_cursor(0, 4);
     oled_write_P(PSTR(""), false);
-    oled_write_P(led_usb_state.caps_lock ? PSTR("CAPS") : PSTR("         "), false);
+    oled_write_P(led_usb_state.caps_lock ? PSTR("CAPSL") : PSTR("         "), false);
 }
 
 void persistent_default_layer_set(uint16_t default_layer) {
@@ -553,11 +544,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // WPM counter code
 void oled_render_speed(void) {
-    oled_set_cursor(0, 6); // make it column 0 line 6 oled; kolom dihitung dari kiri ke kanan, line dihitung dari atas ke bawah
+    uint8_t chars = oled_max_chars();
+    oled_set_cursor((chars - 3) / 2, 7); // make it column 0 line 6 oled; kolom dihitung dari kiri ke kanan, line dihitung dari atas ke bawah
     oled_write_P(PSTR("WPM"), false);
-    oled_set_cursor(0, 7);
+    oled_set_cursor((chars - 3) / 2, 8);
     oled_write_ln(get_u8_str(get_current_wpm(), '0'), false);
 }
+
+// // Set cursor to display "WPM" in the middle horizontally
+// oled_set_cursor((chars - 3) / 2, 6);
+
+// // Write "WPM" on OLED display without wrapping
+// oled_write_P(PSTR("WPM"), false);
+
+// // Set cursor to display current WPM value in the middle horizontally
+// oled_set_cursor((chars - get_u8_str_len(get_current_wpm(), '0')) / 2, 7);
+
+// // Write current WPM value on OLED display with a newline character
+// oled_write_ln(get_u8_str(get_current_wpm(), '0'), false);
 
 // New Logo
 static void render_my_logo(void) {
@@ -603,9 +607,10 @@ bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_layer_state();
         oled_render_speed();
-    
+
     /* KEYBOARD PET VARIABLES START */
     current_wpm   = get_current_wpm();
+    led_usb_state = host_keyboard_led_state();
     /* KEYBOARD PET VARIABLES END */
 
     /* KEYBOARD PET RENDER START */
@@ -618,11 +623,11 @@ bool oled_task_user(void) {
     return false;
 }
 
-void housekeeping_task_oled(void) {
-    is_oled_enabled = false;
-    if ((is_oled_locked || (last_input_activity_elapsed() < 60000)) && !is_oled_force_off) {
-        is_oled_enabled = true;
-    }
-}
+// void housekeeping_task_oled(void) {
+//     is_oled_enabled = false;
+//     if ((is_oled_locked || (last_input_activity_elapsed() < 60000)) && !is_oled_force_off) {
+//         is_oled_enabled = true;
+//     }
+// }
 
 #endif // OLED_ENABLE
