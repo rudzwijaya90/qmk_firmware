@@ -37,15 +37,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define OLED_BRIGHTNESS 120
 #define OLED_TIMEOUT 100000 // in ms
 
-// WPM sample setting
-#ifndef WPM_SAMPLE_SECONDS
-#    define WPM_SAMPLE_SECONDS 10
-#endif
-#ifndef WPM_SAMPLE_PERIODS
-#    define WPM_SAMPLE_PERIODS 50
-#endif
-// WPM sample setting
-
 #define MOUSEKEY_INTERVAL 5
 #define MOUSEKEY_MAX_SPEED 6
 #define MOUSEKEY_WHEEL_INTERVAL 120
@@ -58,9 +49,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     #define RGBLIGHT_EFFECT_KNIGHT
     #define RGBLIGHT_EFFECT_CHRISTMAS
     #define RGBLIGHT_EFFECT_STATIC_GRADIENT
-//  #define RGBLIGHT_EFFECT_RGB_TEST
-    #define RGBLIGHT_EFFECT_ALTERNATING
-//  #define RGBLIGHT_EFFECT_TWINKLE
+    #define RGBLIGHT_EFFECT_RGB_TEST
+    // #define RGBLIGHT_EFFECT_ALTERNATING
+    // #define RGBLIGHT_EFFECT_TWINKLE
     #define RGBLIGHT_LIMIT_VAL 120
     #define RGBLIGHT_HUE_STEP 10
     #define RGBLIGHT_SAT_STEP 17

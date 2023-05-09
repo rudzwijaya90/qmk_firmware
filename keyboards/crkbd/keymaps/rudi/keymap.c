@@ -40,7 +40,7 @@ enum custom_keycodes {
   NUMLOCK,
 };
 
-bool is_oled_enabled = true, is_oled_locked = false, is_oled_force_off = false;
+// bool is_oled_enabled = true, is_oled_locked = false, is_oled_force_off = false;
 
 // Tap dance
 enum {
@@ -155,9 +155,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, KC_LCAP, KC_CAPS,                       QWERTY, COLEMAK,    GAME, XXXXXXX,  KC_PWR, KC_SLEP,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, KC_BRID,                      NUMLOCK, KC_PAUS, KC_SCRL, XXXXXXX, XXXXXXX, XXXXXXX,
+      RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, KC_BRIU,                      NUMLOCK, KC_PAUS, KC_SCRL, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, KC_BRIU,                      KC_MSEL, KC_MUTE, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,
+      RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, KC_BRID,                      KC_MSEL, KC_MUTE, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                  KC_LALT, _______,  KC_SPC,                      TD_RSPC, _______, TT_RALT
                                       //`--------------------------'  `--------------------------'
