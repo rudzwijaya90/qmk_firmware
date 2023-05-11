@@ -28,18 +28,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define MASTER_RIGHT
 // #define EE_HANDS
 
-#define QUICK_TAP_TERM 70 // 120 default value
+// #define QUICK_TAP_TERM 70 // 120 default value
 #define TAPPING_TERM 170 // 200 default value | The tapping term defines for how long in milliseconds you need to hold a key before the tap becomes a hold
 #define TAPPING_TERM_PER_KEY
 #define IGNORE_MOD_TAP_INTERRUPT
 #define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
+#define PREVENT_STUCK_MODIFIERS
 
 #define OLED_BRIGHTNESS 120
 #define OLED_TIMEOUT 100000 // in ms
 
 #define MOUSEKEY_INTERVAL 5
 #define MOUSEKEY_MAX_SPEED 6
-#define MOUSEKEY_WHEEL_INTERVAL 120
+#define MOUSEKEY_WHEEL_INTERVAL 100
 
 #ifdef RGBLIGHT_ENABLE
     #define RGBLIGHT_EFFECT_BREATHING

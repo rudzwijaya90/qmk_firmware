@@ -29,10 +29,6 @@ enum layers {
   _ADJUST,
 };
 
-#define LOWER  MO(_LOWER)
-#define RAISE  MO(_RAISE)
-#define ADJUST MO(_ADJUST)
-
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
   COLEMAK,
@@ -41,6 +37,14 @@ enum custom_keycodes {
 };
 
 // bool is_oled_enabled = true, is_oled_locked = false, is_oled_force_off = false;
+
+#define LOWER  LT(4, KC_ENT)
+#define RAISE  LT(5, KC_ESC)
+#define ADJUST MO(_ADJUST)
+#define LSF_ESC     LSFT_T(KC_ESC) // Left Shift when held, Tab when tapped
+#define RSF_QUO     RSFT_T(KC_QUOT) // Right Shift when held, Enter when tapped
+#define RCTL_EN     RCTL_T(KC_ENT)
+#define LTB_L4      LT(4, KC_TAB)
 
 // Tap dance
 enum {
@@ -60,11 +64,6 @@ enum {
     DOUBLE_TAP
 };
 
-#define LSF_ESC     LSFT_T(KC_ESC) // Left Shift when held, Tab when tapped
-#define RSF_QUO      RSFT_T(KC_QUOT) // Right Shift when held, Enter when tapped
-#define RCTL_EN      RCTL_T(KC_ENT)
-
-// Tap Dance
 #define TD_RSPC     TD(right_space)
 #define TT_RALT     TD(right_alt)
 #define TD_LTAB     TD(left_tab)
@@ -76,6 +75,20 @@ void right_space_finished(tap_dance_state_t *state, void *user_data);
 void right_space_reset(tap_dance_state_t *state, void *user_data);
 void left_tab_finished(tap_dance_state_t *state, void *user_data);
 void left_tab_reset(tap_dance_state_t *state, void *user_data);
+
+#ifdef RGBLIGHT_ENABLE
+void suspend_power_down_kb(void) {
+    rgblight_disable_noeeprom();
+    suspend_power_down_user();
+    oled_off();
+}
+
+void suspend_wakeup_init_kb(void) {
+    rgblight_enable_noeeprom();
+    suspend_wakeup_init_user();
+    oled_on();
+}
+#endif // RGBLIGHT_ENABLE
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT_split_3x6_3(
@@ -104,7 +117,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_GAME] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
+       LTB_L4,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LSF_ESC,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, RSF_QUO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -117,37 +130,37 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //Numlock/Game Layout
     [_NUMLOCK] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_TAB,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_PMNS,   KC_P7,   KC_P8,   KC_P9, KC_PSLS, KC_BSPC,
+      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_PMNS,   KC_P7,   KC_P8,   KC_P9, KC_PSLS, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LSF_ESC,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                      KC_PPLS,   KC_P4,   KC_P5,   KC_P6, KC_PAST,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,   KC_F6,   KC_F7,   KC_F8, KC_MYCM, KC_LGUI,                        KC_P0,   KC_P1,   KC_P2,   KC_P3, KC_PDOT, KC_PENT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                 KC_LALT, _______,  KC_ENT,                      TD_RSPC, _______,   QWERTY
+                                 KC_LALT, _______,  KC_ENT,                      TD_RSPC,  ADJUST,   QWERTY
                                       //`--------------------------'  `--------------------------'
   ),
 
     [_LOWER] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_TAB, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
+      _______, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_DEL, KC_LEFT, KC_DOWN,   KC_UP,KC_RIGHT, KC_WH_U,                      KC_MINS,  KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS,  KC_GRV,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, KC_CALC, KC_PGDN, KC_PGUP, KC_MYCM, KC_WH_D,                      KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                 KC_LALT, _______,  KC_SPC,                      TD_RSPC,  ADJUST, TT_RALT
+                                 KC_LALT, _______,  KC_ENT,                      TD_RSPC,  ADJUST, TT_RALT
                                       //`--------------------------'  `--------------------------'
   ),
-
+    
     [_RAISE] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       KC_TAB,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, KC_BSPC,
+      _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_DEL,    KC_F1,  KC_F2,   KC_F3,   KC_F4,   KC_F5,                      KC_LEFT, KC_DOWN,   KC_UP,KC_RIGHT, KC_HOME,  KC_INS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,    KC_F6,  KC_F7,   KC_F8,   KC_F9,  KC_F10,                       KC_F11,  KC_F12, KC_PGUP, KC_PGDN,  KC_END, KC_PSCR,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                 KC_LALT,  ADJUST,  KC_SPC,                      TD_RSPC, _______, TT_RALT
+                                 KC_LALT,  ADJUST,  KC_ENT,                      TD_RSPC, _______, TT_RALT
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -159,10 +172,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, KC_BRID,                      KC_MSEL, KC_MUTE, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                 KC_LALT, _______,  KC_SPC,                      TD_RSPC, _______, TT_RALT
+                                 KC_LALT, _______,  KC_ENT,                      TD_RSPC, _______, TT_RALT
                                       //`--------------------------'  `--------------------------'
   )
 };
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(default_layer_state)) {
+        case _LOWER:
+            state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+            break;
+        case _RAISE:
+            state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+            break;
+    }
+    return state;
+}
 
 bool get_ignore_mod_tap_interrupt(uint16_t keycode, keyrecord_t *record) {
    switch (keycode) {
@@ -178,6 +203,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case TD_RSPC:
             return TAPPING_TERM + 120;
+        case LOWER:
+        case RAISE:
+            return TAPPING_TERM - 45;
         default:
             return TAPPING_TERM;
     }
@@ -186,6 +214,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case RCTL_EN:
+        case LOWER:
+        case RAISE:
             // Immediately select the hold action when another key is pressed.
             return true;
         default:
@@ -489,26 +519,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         persistent_default_layer_set(1UL<<_NUMLOCK);
       return false;
       break;
-    case LOWER:
-      if (record->event.pressed) {
-        layer_on(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      } else {
-        layer_off(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      }
-      return false;
-      break;
-    case RAISE:
-      if (record->event.pressed) {
-        layer_on(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      } else {
-        layer_off(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      }
-      return false;
-      break;
+    // case LOWER:
+    //   if (record->event.pressed) {
+    //     // layer_on(_LOWER);
+    //     update_tri_layer_state(_LOWER, _RAISE, _ADJUST);
+    //   } else {
+    //     // layer_off(_LOWER);
+    //     update_tri_layer_state(_LOWER, _RAISE, _ADJUST);
+    //   }
+    //   return false;
+    //   break;
+    // case RAISE:
+    //   if (record->event.pressed) {
+    //     // layer_on(_RAISE);
+    //     update_tri_layer_state(_LOWER, _RAISE, _ADJUST);
+    //   } else {
+    //     // layer_off(_RAISE);
+    //     update_tri_layer_state(_LOWER, _RAISE, _ADJUST);
+    //   }
+    //   return false;
+    //   break;
     case ADJUST:
       if (record->event.pressed) {
         layer_on(_ADJUST);
