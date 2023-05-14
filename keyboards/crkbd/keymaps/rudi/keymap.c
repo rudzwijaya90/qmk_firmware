@@ -19,23 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
-
-#ifdef RGBLIGHT_ENABLE
-void suspend_power_down_kb(void) {
-    rgblight_disable_noeeprom();
-    suspend_power_down_user();
-    oled_off();
-}
-
-void suspend_wakeup_init_kb(void) {
-    rgblight_enable_noeeprom();
-    suspend_wakeup_init_user();
-    oled_on();
-}
-#endif // RGBLIGHT_ENABLE
-
-=======
-
 enum layers {
   _QWERTY,
   _COLEMAK,
@@ -50,24 +33,24 @@ enum custom_keycodes {
   QWERTY = SAFE_RANGE,
   COLEMAK,
   GAME,
-  NUMLOCK,
+  NUMLOCK
 };
 
-// bool is_oled_enabled = true, is_oled_locked = false, is_oled_force_off = false;
+#define LOWER       MO(_LOWER)
+#define RAISE       MO(_RAISE)
+#define ADJUST      MO(_ADJUST)
 
-#define LOWER  LT(4, KC_ENT)
-#define RAISE  LT(5, KC_ESC)
-#define ADJUST MO(_ADJUST)
 #define LSF_ESC     LSFT_T(KC_ESC) // Left Shift when held, Tab when tapped
 #define RSF_QUO     RSFT_T(KC_QUOT) // Right Shift when held, Enter when tapped
 #define RCTL_EN     RCTL_T(KC_ENT)
-#define LTB_L4      LT(4, KC_TAB)
+#define LTB_L4      LT(_LOWER, KC_TAB)
+// #define LTB_L3      LT(_NUMLOCK, KC_TAB)
 
 // Tap dance
 enum {
-    right_alt,
-    right_space,
-    left_tab
+  SINGLE_TAP = 1,
+  SINGLE_HOLD = 2,
+  DOUBLE_TAP = 3
 };
 
 typedef struct {
@@ -76,31 +59,31 @@ typedef struct {
 } tap;
 
 enum {
-    SINGLE_TAP = 1,
-    SINGLE_HOLD,
-    DOUBLE_TAP
+    left_z,
+    right_space,
+    right_alt  
 };
 
 #define TD_RSPC     TD(right_space)
 #define TT_RALT     TD(right_alt)
-#define TD_LTAB     TD(left_tab)
+#define TD_KCZ      TD(left_z)
 
 uint8_t cur_dance(tap_dance_state_t *state);
 void right_alt_finished(tap_dance_state_t *state, void *user_data);
 void right_alt_reset(tap_dance_state_t *state, void *user_data);
 void right_space_finished(tap_dance_state_t *state, void *user_data);
 void right_space_reset(tap_dance_state_t *state, void *user_data);
-void left_tab_finished(tap_dance_state_t *state, void *user_data);
-void left_tab_reset(tap_dance_state_t *state, void *user_data);
+void left_z_finished(tap_dance_state_t *state, void *user_data);
+void left_z_reset(tap_dance_state_t *state, void *user_data);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      TD_LTAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
+       KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LSF_ESC,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, RSF_QUO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, RCTL_EN,
+      KC_LCTL,  TD_KCZ,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, RCTL_EN,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                  KC_LALT,   LOWER,  KC_SPC,                      TD_RSPC,   RAISE, TT_RALT
                                       //`--------------------------'  `--------------------------'
@@ -108,11 +91,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_COLEMAK] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      TD_LTAB,    KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,                         KC_J,    KC_L,    KC_U,    KC_Y, KC_SCLN, KC_BSPC,
+       KC_TAB,    KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,                         KC_J,    KC_L,    KC_U,    KC_Y, KC_SCLN, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LSF_ESC,    KC_A,    KC_R,    KC_S,    KC_T,    KC_D,                         KC_H,    KC_N,    KC_E,    KC_I,    KC_O, RSF_QUO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, RCTL_EN,
+      KC_LCTL,  TD_KCZ,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, RCTL_EN,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                  KC_LALT,   LOWER,  KC_SPC,                      TD_RSPC,   RAISE,  TT_RALT
                                       //`--------------------------'  `--------------------------'
@@ -137,7 +120,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LSF_ESC,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                      KC_PPLS,   KC_P4,   KC_P5,   KC_P6, KC_PAST,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,   KC_F6,   KC_F7,   KC_F8, KC_MYCM, KC_LGUI,                        KC_P0,   KC_P1,   KC_P2,   KC_P3, KC_PDOT, KC_PENT,
+      KC_LCTL, _______,   KC_F6,   KC_F7, KC_MYCM, KC_LGUI,                        KC_P0,   KC_P1,   KC_P2,   KC_P3, KC_PDOT, KC_PENT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                  KC_LALT, _______,  KC_ENT,                      TD_RSPC,  ADJUST,   QWERTY
                                       //`--------------------------'  `--------------------------'
@@ -149,7 +132,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_DEL, KC_LEFT, KC_DOWN,   KC_UP,KC_RIGHT, KC_WH_U,                      KC_MINS,  KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS,  KC_GRV,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, KC_CALC, KC_PGDN, KC_PGUP, KC_MYCM, KC_WH_D,                      KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
+      KC_LGUI, KC_CALC, KC_PGDN, KC_PGUP, KC_MYCM, KC_WH_D,                      KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                  KC_LALT, _______,  KC_ENT,                      TD_RSPC,  ADJUST, TT_RALT
                                       //`--------------------------'  `--------------------------'
@@ -161,7 +144,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_DEL,    KC_F1,  KC_F2,   KC_F3,   KC_F4,   KC_F5,                      KC_LEFT, KC_DOWN,   KC_UP,KC_RIGHT, KC_HOME,  KC_INS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,    KC_F6,  KC_F7,   KC_F8,   KC_F9,  KC_F10,                       KC_F11,  KC_F12, KC_PGUP, KC_PGDN,  KC_END, KC_PSCR,
+      KC_LGUI,    KC_F6,  KC_F7,   KC_F8,   KC_F9,  KC_F10,                       KC_F11,  KC_F12, KC_PGUP, KC_PGDN,  KC_END, KC_PSCR,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                  KC_LALT,  ADJUST,  KC_ENT,                      TD_RSPC, _______, TT_RALT
                                       //`--------------------------'  `--------------------------'
@@ -180,16 +163,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-    switch (get_highest_layer(default_layer_state)) {
-        case _LOWER:
-            state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
-            break;
-        case _RAISE:
-            state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
-            break;
+// For LT(layer, kc) function
+// layer_state_t layer_state_set_user(layer_state_t state) {
+//     switch (get_highest_layer(default_layer_state)) {
+//         case _LOWER:
+//             state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+//             break;
+//         case _RAISE:
+//             state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+//             break;
+//         case _NUMLOCK:
+//             state = update_tri_layer_state(state, _NUMLOCK, _RAISE, _ADJUST);
+//             break;
+//     }
+//     return state;
+// }
+
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case TD_RSPC:
+            return TAPPING_TERM + 120;
+        default:
+            return TAPPING_TERM;
     }
-    return state;
 }
 
 bool get_ignore_mod_tap_interrupt(uint16_t keycode, keyrecord_t *record) {
@@ -202,23 +198,9 @@ bool get_ignore_mod_tap_interrupt(uint16_t keycode, keyrecord_t *record) {
    }
 }
 
-uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case TD_RSPC:
-            return TAPPING_TERM + 120;
-        case LOWER:
-        case RAISE:
-            return TAPPING_TERM - 45;
-        default:
-            return TAPPING_TERM;
-    }
-}
-
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case RCTL_EN:
-        case LOWER:
-        case RAISE:
             // Immediately select the hold action when another key is pressed.
             return true;
         default:
@@ -239,12 +221,12 @@ uint8_t cur_dance(tap_dance_state_t *state) {
     //}else return 8; // Magic number. At some point this method will expand to work for more presses
 }
 
-static tap right_alt_tap_state, right_space_tap_state, left_tab_tap_state = {
+// right_alt code
+static tap right_alt_tap_state = {
     .is_press_action = true,
     .state = 0
 };
 
-// right_alt code
 void right_alt_finished(tap_dance_state_t *state, void *user_data) {
     right_alt_tap_state.state = cur_dance(state);
     switch (right_alt_tap_state.state) {
@@ -264,6 +246,11 @@ void right_alt_reset(tap_dance_state_t *state, void *user_data) {
 }
 
 // right_space code
+static tap right_space_tap_state = {
+    .is_press_action = true,
+    .state = 0
+};
+
 void right_space_finished(tap_dance_state_t *state, void *user_data) {
     right_space_tap_state.state = cur_dance(state);
     switch (right_space_tap_state.state) {
@@ -282,32 +269,50 @@ void right_space_reset(tap_dance_state_t *state, void *user_data) {
     right_space_tap_state.state = 0;
 }
 
-// left_tab code
-void left_tab_finished(tap_dance_state_t *state, void *user_data) {
-    left_tab_tap_state.state = cur_dance(state);
-    switch (left_tab_tap_state.state) {
-        case SINGLE_TAP: register_code(KC_TAB); break;
-        case SINGLE_HOLD: layer_on(_NUMLOCK); break;
+// left_z code
+static tap left_z_tap_state = {
+    .is_press_action = true,
+    .state = 0
+};
+
+void left_z_finished(tap_dance_state_t *state, void *user_data) {
+    left_z_tap_state.state = cur_dance(state);
+    switch (left_z_tap_state.state) {
+        case SINGLE_TAP: register_code(KC_Z); break;
+        case SINGLE_HOLD: layer_on(3); break;
         case DOUBLE_TAP: register_code(KC_CAPS); break;
     }
 }
 
-void left_tab_reset(tap_dance_state_t *state, void *user_data) {
-    switch (left_tab_tap_state.state) {
-        case SINGLE_TAP: unregister_code(KC_TAB); break;
-        case SINGLE_HOLD: layer_off(_NUMLOCK); break;
+void left_z_reset(tap_dance_state_t *state, void *user_data) {
+    switch (left_z_tap_state.state) {
+        case SINGLE_TAP: unregister_code(KC_Z); break;
+        case SINGLE_HOLD: layer_off(3); break;
         case DOUBLE_TAP: unregister_code(KC_CAPS); break;
     }
-    left_tab_tap_state.state = 0;
+    left_z_tap_state.state = 0;
 }
 
 tap_dance_action_t tap_dance_actions[] = {
     [right_alt] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, right_alt_finished, right_alt_reset),
     [right_space] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, right_space_finished, right_space_reset),
-    [left_tab] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, left_tab_finished, left_tab_reset)
+    [left_z] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, left_z_finished, left_z_reset)
 };
 
 #ifdef OLED_ENABLE
+
+void suspend_power_down_kb(void) {
+    rgblight_disable_noeeprom();
+    suspend_power_down_user();
+    oled_off();
+}
+
+void suspend_wakeup_init_kb(void) {
+    rgblight_enable_noeeprom();
+    suspend_wakeup_init_user();
+    oled_on();
+}
+
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   if (is_keyboard_master()) {
     return OLED_ROTATION_270;  
@@ -522,26 +527,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         persistent_default_layer_set(1UL<<_NUMLOCK);
       return false;
       break;
-    // case LOWER:
+    // case NUMLOCK:
     //   if (record->event.pressed) {
-    //     // layer_on(_LOWER);
-    //     update_tri_layer_state(_LOWER, _RAISE, _ADJUST);
+    //     layer_on(_NUMLOCK);
+    //     update_tri_layer(_NUMLOCK, _RAISE, _ADJUST);
     //   } else {
-    //     // layer_off(_LOWER);
-    //     update_tri_layer_state(_LOWER, _RAISE, _ADJUST);
+    //     layer_off(_NUMLOCK);
+    //     update_tri_layer(_NUMLOCK, _RAISE, _ADJUST);
     //   }
     //   return false;
     //   break;
-    // case RAISE:
-    //   if (record->event.pressed) {
-    //     // layer_on(_RAISE);
-    //     update_tri_layer_state(_LOWER, _RAISE, _ADJUST);
-    //   } else {
-    //     // layer_off(_RAISE);
-    //     update_tri_layer_state(_LOWER, _RAISE, _ADJUST);
-    //   }
-    //   return false;
-    //   break;
+    case LOWER:
+      if (record->event.pressed) {
+        layer_on(_LOWER);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      } else {
+        layer_off(_LOWER);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      }
+      return false;
+      break;
+    case RAISE:
+      if (record->event.pressed) {
+        layer_on(_RAISE);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      } else {
+        layer_off(_RAISE);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      }
+      return false;
+      break;
     case ADJUST:
       if (record->event.pressed) {
         layer_on(_ADJUST);
@@ -655,6 +670,8 @@ bool oled_task_user(void) {
     } 
     return false;
 }
+
+// bool is_oled_enabled = true, is_oled_locked = false, is_oled_force_off = false;
 
 // void housekeeping_task_oled(void) {
 //     is_oled_enabled = false;
