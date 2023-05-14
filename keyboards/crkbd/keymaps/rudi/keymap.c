@@ -34,8 +34,6 @@ void suspend_wakeup_init_kb(void) {
 }
 #endif // RGBLIGHT_ENABLE
 
-=======
-
 enum layers {
   _QWERTY,
   _COLEMAK,
@@ -62,6 +60,9 @@ enum custom_keycodes {
 #define RSF_QUO     RSFT_T(KC_QUOT) // Right Shift when held, Enter when tapped
 #define RCTL_EN     RCTL_T(KC_ENT)
 #define LTB_L4      LT(4, KC_TAB)
+
+#define _______ KC_TRNS
+#define XXXXXXX KC_NO
 
 // Tap dance
 enum {
@@ -94,6 +95,18 @@ void left_tab_finished(tap_dance_state_t *state, void *user_data);
 void left_tab_reset(tap_dance_state_t *state, void *user_data);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    [_GAME] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+       LTB_L4,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      LSF_ESC,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, RSF_QUO,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_LCTL,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, RCTL_EN,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                 KC_LALT,   MO(3),  KC_SPC,                      TD_RSPC,   RAISE, TT_RALT
+                                      //`--------------------------'  `--------------------------'
+  ),
+
     [_QWERTY] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       TD_LTAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
@@ -117,19 +130,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  KC_LALT,   LOWER,  KC_SPC,                      TD_RSPC,   RAISE,  TT_RALT
                                       //`--------------------------'  `--------------------------'
   ),
-
-    [_GAME] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       LTB_L4,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LSF_ESC,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, RSF_QUO,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, RCTL_EN,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                 KC_LALT,   MO(3),  KC_SPC,                      TD_RSPC,   RAISE, TT_RALT
-                                      //`--------------------------'  `--------------------------'
-  ),
-
       //Numlock/Game Layout
     [_NUMLOCK] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
