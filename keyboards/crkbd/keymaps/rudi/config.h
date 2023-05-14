@@ -58,7 +58,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     #define RGBLIGHT_VAL_STEP 17
 #endif
 
-//to save space for firmware, LINK https://docs.qmk.fm/#/squeezing_avr
+//to save space for firmware https://docs.qmk.fm/#/squeezing_avr
+
 #ifndef NO_DEBUG
 #define NO_DEBUG
 #endif // !NO_DEBUG

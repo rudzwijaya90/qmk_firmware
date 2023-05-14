@@ -19,6 +19,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
+#ifdef RGBLIGHT_ENABLE
+void suspend_power_down_kb(void) {
+    rgblight_disable_noeeprom();
+    suspend_power_down_user();
+    oled_off();
+}
+
+void suspend_wakeup_init_kb(void) {
+    rgblight_enable_noeeprom();
+    suspend_wakeup_init_user();
+    oled_on();
+}
+#endif // RGBLIGHT_ENABLE
+
 enum layers {
   _QWERTY,
   _COLEMAK,
