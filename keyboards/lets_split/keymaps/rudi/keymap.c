@@ -7,7 +7,7 @@
 
 #define _QWERTY 0
 #define _COLEMAK 1
-// #define _DVORAK 2
+#define _DVORAK 2
 #define _LOWER 3
 #define _RAISE 4
 #define _ADJUST 5
@@ -15,7 +15,7 @@
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
   COLEMAK,
-  // DVORAK
+  DVORAK
 };
 
 #define LOWER  MO(_LOWER)
@@ -85,23 +85,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LCTL, KC_LGUI,  KC_DEL, KC_LALT,   LOWER,  KC_SPC,  KC_SPC,   RAISE, KC_LEFT, KC_DOWN,   KC_UP,  KC_RGHT
 ),
 
-// /* Dvorak
-//  * ,-----------------------------------------------------------------------------------.
-//  * | Tab  |   '  |   ,  |   .  |   P  |   Y  |   F  |   G  |   C  |   R  |   L  | Bksp |
-//  * |------+------+------+------+------+-------------+------+------+------+------+------|
-//  * | Esc  |   A  |   O  |   E  |   U  |   I  |   D  |   H  |   T  |   N  |   S  |  /   |
-//  * |------+------+------+------+------+------|------+------+------+------+------+------|
-//  * | Shift|   ;  |   Q  |   J  |   K  |   X  |   B  |   M  |   W  |   V  |   Z  |Enter |
-//  * |------+------+------+------+------+------+------+------+------+------+------+------|
-//  * |Adjust| Ctrl | Alt  | GUI  |Lower |Space |Space |Raise | Left | Down |  Up  |Right |
-//  * `-----------------------------------------------------------------------------------'
-//  */
-// [_DVORAK] = LAYOUT_ortho_4x12(
-//   KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
-//   TD_LESC,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_SLSH,
-//   LSHT_FT, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_ENT ,
-//   KC_LCTL, KC_LGUI,  KC_DEL, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
-// ),
+/* Dvorak
+ * ,-----------------------------------------------------------------------------------.
+ * | Tab  |   '  |   ,  |   .  |   P  |   Y  |   F  |   G  |   C  |   R  |   L  | Bksp |
+ * |------+------+------+------+------+-------------+------+------+------+------+------|
+ * | Esc  |   A  |   O  |   E  |   U  |   I  |   D  |   H  |   T  |   N  |   S  |  /   |
+ * |------+------+------+------+------+------|------+------+------+------+------+------|
+ * | Shift|   ;  |   Q  |   J  |   K  |   X  |   B  |   M  |   W  |   V  |   Z  |Enter |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |Adjust| Ctrl | Alt  | GUI  |Lower |Space |Space |Raise | Left | Down |  Up  |Right |
+ * `-----------------------------------------------------------------------------------'
+ */
+[_DVORAK] = LAYOUT_ortho_4x12(
+  KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
+  TD_LESC,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_SLSH,
+  LSHT_FT, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_ENT ,
+  KC_LCTL, KC_LGUI,  KC_DEL, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
+),
 
 /* Lower
  * ,-----------------------------------------------------------------------------------.
@@ -152,7 +152,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJUST] =  LAYOUT_ortho_4x12(
   _______, QK_BOOT, _______, _______, _______, _______, _______, _______, _______, _______,  KC_PWR,  KC_DEL,
-  _______, _______, _______, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  COLEMAK, _______,  _______, _______,
+  _______, _______, _______, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  COLEMAK,  DVORAK,  _______, _______,
   _______, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD, _______, _______, _______, _______, _______,
   _______, RGB_TOG, RGB_MOD, _______, _______, _______, _______, _______, _______, _______, _______, _______
 )
@@ -217,11 +217,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         persistent_default_layer_set(1UL<<_COLEMAK);
       }
       return false;
-    // case DVORAK:
-    //   if (record->event.pressed) {
-    //     persistent_default_layer_set(1UL<<_DVORAK);
-    //   }
-    //   return false;
+    case DVORAK:
+      if (record->event.pressed) {
+        persistent_default_layer_set(1UL<<_DVORAK);
+      }
+      return false;
     case LOWER:
       if (record->event.pressed) {
         layer_on(_LOWER);

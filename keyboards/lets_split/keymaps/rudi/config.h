@@ -20,19 +20,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-<<<<<<< HEAD
-/* Select hand configuration */
-#define MASTER_LEFT
-// #define MASTER_RIGHT
-// #define EE_HANDS
-=======
 #include "../../rev2/config.h"
 
 /* Select hand configuration */
 // #define MASTER_LEFT
 // #define MASTER_RIGHT
 #define EE_HANDS
->>>>>>> origin/rudi
 
 #define DYNAMIC_KEYMAP_LAYER_COUNT 8
 #define TAPPING_TERM 170
@@ -40,20 +33,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_MAX_SPEED 6
 #define MOUSEKEY_WHEEL_INTERVAL 120
 
-<<<<<<< HEAD
-
-#ifdef RGBLIGHT_ENABLE
-
-    #define RGBLIGHT_ANIMATIONS
-    #undef RGBLED_NUM
-    #define RGBLED_NUM (8*2)
-    #define RGB_DI_PIN D3 /* ws2812 RGB LED */
-    #undef RGBLED_SPLIT
-    #define RGBLED_SPLIT { 8, 8 } 
-    #undef RGBLIGHT_SPLIT
-    #define RGBLIGHT_SPLIT
-
-=======
 #undef RGBLED_NUM
 #define RGBLIGHT_ANIMATIONS
 #define RGBLED_NUM 16
@@ -63,7 +42,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define USE_SERIAL
 
 #ifdef RGBLIGHT_ENABLE
->>>>>>> origin/rudi
     #define RGBLIGHT_EFFECT_BREATHING
     #define RGBLIGHT_EFFECT_RAINBOW_MOOD
     #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
